@@ -75,7 +75,7 @@ const createNewProjectValidation= (req,res,next)=>{
 
 const projectValidation= (req,res,next)=>{
     const schema=Joi.object({
-        _id:longStr.min(8).required(),
+        _id:longStr.min(8),
         title:shortStr.min(2),
         deadline:shortStr.min(2),
         income:Joi.number()
@@ -107,11 +107,11 @@ const createClientValidation= (req,res,next)=>{
 
 const clientValidation= (req,res,next)=>{
     const schema=Joi.object({
-        _id:longStr.min(8).required(),
+        _id:longStr.min(8),
         name:shortStr.min(2),
         company:shortStr.min(2),
-        email:email.required(),
-        phone:contactNumber.required(),
+        email:email,
+        phone:contactNumber,
         paid:Joi.number(),
         budget:Joi.number()
     })

@@ -36,9 +36,9 @@ router.get("/", userAuthorization, async (req, res) => {
 })
 
 //update project details
-router.put("/",projectValidation,userAuthorization, async (req, res) => {
+router.patch("/:id",projectValidation,userAuthorization, async (req, res) => {
     try {
-        const updatedProject = await Project.findOneAndUpdate({_id:req.body._id},req.body,{
+        const updatedProject = await Project.findOneAndUpdate({_id:req.params.id},req.body,{
             new:true
         });
         await updatedProject.save()

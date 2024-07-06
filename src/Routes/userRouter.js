@@ -16,7 +16,7 @@ router.all("/", (req, res, next) => {
 })
 
 //admin creates a new opeartor
-router.post('/',createNewUserValidation,isAdmin, async (req, res) => {
+router.post('/',createNewUserValidation,userAuthorization,isAdmin, async (req, res) => {
     try {
         const newUser = await new User(req.body)
         await newUser.save();
@@ -28,7 +28,7 @@ router.post('/',createNewUserValidation,isAdmin, async (req, res) => {
         res.status(400).send({ message: "failed to create user" })
     }
 })
-//operator log in 
+//employee log in 
 router.post('/login',loginValidation, async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -50,8 +50,8 @@ router.post('/login',loginValidation, async (req, res) => {
     }
 })
 
-//get all employees
-router.get("/", userAuthorization, async (req, res) => {
+//get my profile
+router.get("/me", userAuthorization, async (req, res) => {
 
     try {
         const userId = req.userId
@@ -61,6 +61,65 @@ router.get("/", userAuthorization, async (req, res) => {
     } catch (error) {
         console.log(error);
         res.send(500).send({ message: "internal server error ,please try again later" })
+    }
+})
+
+//update my profile
+router.patch("/me",userAuthorization, async (req, res) => {
+    try {
+        const updatedUser = await User.findOneAndUpdate({_id:req.userId},req.body,{
+            new:true
+        });
+        await updatedUser.save()
+        res.send(updatedUser)
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({message : "internal server error"})
+    }
+
+})
+
+//get all employees
+router.get("/", userAuthorization, async (req, res) => {
+
+    try {
+        const users = await User.find({})
+        res.send(users)
+    } catch (error) {
+        console.log(error);
+        res.send(500).send({ message: "internal server error ,please try again later" })
+    }
+})
+
+//update employee details (only by admin)
+router.patch("/",userAuthorization,isAdmin, async (req, res) => {
+    try {
+        const updatedUser = await User.findOneAndUpdate({_id:req.body._id},req.body,{
+            new:true
+        });
+        await updatedUser.save()
+        res.send(updatedUser)
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({message : "internal server error"})
+    }
+
+})
+
+//only admin can delete employee details
+router.delete("/:id",userAuthorization,isAdmin, async (req, res) => {
+    try {
+        const user = await User.findOneAndDelete({_id:req.params.id})
+        if (!User) {
+            return res.status(404).send()
+        }
+        res.send(user)
+    } catch (error) {
+        res.status(500).send({
+            reason: "internal server error",
+            message: "our services are currently down",
+        })
+        console.log("Error : ",error)
     }
 })
 

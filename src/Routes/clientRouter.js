@@ -37,9 +37,9 @@ router.get("/", userAuthorization, async (req, res) => {
 })
 
 //update client details
-router.put("/",clientValidation,userAuthorization, async (req, res) => {
+router.patch("/:id",clientValidation,userAuthorization, async (req, res) => {
     try {
-        const updatedClient = await Client.findOneAndUpdate({_id:req.body._id},req.body,{
+        const updatedClient = await Client.findOneAndUpdate({_id:req.params.id},req.body,{
             new:true
         });
         await updatedClient.save()
