@@ -1,7 +1,7 @@
 const express = require("express")
 const Client = require("../models/clientModel.js")
 const userAuthorization = require("../Middlewares/auth.js")
-const {clientValidation}=require("../Middlewares/validation.js")
+const {createClientValidation,clientValidation}=require("../Middlewares/validation.js")
 const isAdmin=require("../Middlewares/isAdmin.js")
 
 const router = express.Router()
@@ -11,7 +11,7 @@ router.all("/", (req, res, next) => {
 })
 
 //only admin can add new client 
-router.post('/',clientValidation,userAuthorization,isAdmin, async (req, res) => {
+router.post('/',createClientValidation,userAuthorization,isAdmin, async (req, res) => {
     try {
         const newClient = await new Client(req.body)
         await newClient.save()

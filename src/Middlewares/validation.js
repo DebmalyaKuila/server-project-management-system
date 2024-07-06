@@ -60,7 +60,6 @@ const loginValidation=(req,res,next)=>{
 }
 
 // project validation
-
 const createNewProjectValidation= (req,res,next)=>{
     const schema=Joi.object({
         title:shortStr.min(2).required(),
@@ -89,6 +88,23 @@ const projectValidation= (req,res,next)=>{
 }
 
 //client validation
+const createClientValidation= (req,res,next)=>{
+    const schema=Joi.object({
+        name:shortStr.min(2),
+        company:shortStr.min(2),
+        email:email.required(),
+        phone:contactNumber.required(),
+        paid:Joi.number(),
+        budget:Joi.number()
+    })
+    const value=schema.validate(req.body)
+    if(value.error){
+        return res.send({error:value.error.message})
+    }
+    next()
+}
+
+
 const clientValidation= (req,res,next)=>{
     const schema=Joi.object({
         _id:longStr.min(8).required(),
@@ -114,5 +130,6 @@ module.exports={
     loginValidation,
     createNewProjectValidation,
     projectValidation,
+    createClientValidation,
     clientValidation
 }
