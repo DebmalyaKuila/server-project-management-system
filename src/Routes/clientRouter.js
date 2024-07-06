@@ -2,6 +2,7 @@ const express = require("express")
 const Client = require("../models/clientModel.js")
 const userAuthorization = require("../Middlewares/auth.js")
 const {clientValidation}=require("../Middlewares/validation.js")
+const isAdmin=require("../Middlewares/isAdmin.js")
 
 const router = express.Router()
 
@@ -9,8 +10,8 @@ router.all("/", (req, res, next) => {
     next()
 })
 
-//add new client
-router.post('/',clientValidation,userAuthorization, async (req, res) => {
+//only admin can add new client 
+router.post('/',clientValidation,userAuthorization,isAdmin, async (req, res) => {
     try {
         const newClient = await new Client(req.body)
         await newClient.save()
@@ -49,8 +50,8 @@ router.put("/",clientValidation,userAuthorization, async (req, res) => {
 
 })
 
-//delete client details
-router.delete("/:id",userAuthorization, async (req, res) => {
+//only admin can delete client details
+router.delete("/:id",userAuthorization,isAdmin, async (req, res) => {
     try {
         const client = await Client.findOneAndDelete({_id:req.params.id})
         if (!client) {

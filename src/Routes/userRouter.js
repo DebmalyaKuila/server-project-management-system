@@ -6,6 +6,7 @@ const userAuthorization = require("../Middlewares/auth.js")
 const resetPinModel = require("../models/resetPinModel.js")
 const emailProcessor = require("../helpers/email.helper.js")
 const {resetPasswordValidation,updatePasswordValidation,createNewUserValidation,loginValidation}=require("../Middlewares/validation.js")
+const isAdmin=require("../Middlewares/isAdmin.js")
 
 const router = express.Router()
 
@@ -15,7 +16,7 @@ router.all("/", (req, res, next) => {
 })
 
 //admin creates a new opeartor
-router.post('/',createNewUserValidation, async (req, res) => {
+router.post('/',createNewUserValidation,isAdmin, async (req, res) => {
     try {
         const newUser = await new User(req.body)
         await newUser.save();
@@ -49,6 +50,7 @@ router.post('/login',loginValidation, async (req, res) => {
     }
 })
 
+//get all employees
 router.get("/", userAuthorization, async (req, res) => {
 
     try {
@@ -122,5 +124,7 @@ router.patch("/reset-password",updatePasswordValidation, async (req, res) => {
     }
 
 })
+
+
 
 module.exports = router
