@@ -5,6 +5,7 @@ const helmet=require("helmet")
 const cors=require("cors")
 const logger=require("morgan")
 const connectDB=require("./Configs/db.js") 
+const createAdmin=require("./helpers/createAdmin.js")
 const port=process.env.PORT || 8000
 const app=express()
 
@@ -16,6 +17,9 @@ app.use(cors())
 //connecting to database
 connectDB()
 
+//creating admin
+createAdmin()
+
 //logger
 app.use(logger("combined"))
 //setting up body parser
@@ -25,9 +29,10 @@ app.use(express.urlencoded({ extended: true }));
 
 //load routers
 const userRouter=require("./Routes/userRouter")
-
+const tokensRouter=require("./Routes/tokensRouter.js")
 //using routers
 app.use("/v1/user",userRouter)
+app.use("/v1/tokens",tokensRouter)
 
 
 //setting up error handling
