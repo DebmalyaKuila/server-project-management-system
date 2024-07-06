@@ -30,9 +30,11 @@ app.use(express.urlencoded({ extended: true }));
 //load routers
 const userRouter=require("./Routes/userRouter")
 const tokensRouter=require("./Routes/tokensRouter.js")
+const projectsRouter=require("./Routes/projectsRouter.js")
 //using routers
 app.use("/v1/user",userRouter)
 app.use("/v1/tokens",tokensRouter)
+app.use("/v1/projects",projectsRouter)
 
 
 //setting up error handling

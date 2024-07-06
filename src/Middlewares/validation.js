@@ -9,7 +9,7 @@ const password=Joi.string().min(3).max(50).required()
 const shortStr=Joi.string().max(60)
 const longStr=Joi.string().max(500).allow('')
 
-
+//reset password validation
 
 const resetPasswordValidation= (req,res,next)=>{
     const schema=Joi.object({email})
@@ -29,6 +29,7 @@ const updatePasswordValidation= (req,res,next)=>{
     next()
 }
 
+//user validations 
 
 const createNewUserValidation= (req,res,next)=>{
     const schema=Joi.object({
@@ -58,9 +59,39 @@ const loginValidation=(req,res,next)=>{
     next()
 }
 
+// project validation
+
+const createNewProjectValidation= (req,res,next)=>{
+    const schema=Joi.object({
+        title:shortStr.min(2).required(),
+       deadline:shortStr.min(2),
+        income:Joi.number()
+    })
+    const value=schema.validate(req.body)
+    if(value.error){
+        return res.send({error:value.error.message})
+    }
+    next()
+}
+
+const projectValidation= (req,res,next)=>{
+    const schema=Joi.object({
+        title:shortStr.min(2),
+        deadline:shortStr.min(2),
+        income:Joi.number()
+    })
+    const value=schema.validate(req.body)
+    if(value.error){
+        return res.send({error:value.error.message})
+    }
+    next()
+}
+
 module.exports={
     resetPasswordValidation,
     updatePasswordValidation,
     createNewUserValidation,
-    loginValidation
+    loginValidation,
+    createNewProjectValidation,
+    projectValidation
 }
