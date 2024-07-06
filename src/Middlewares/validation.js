@@ -76,6 +76,7 @@ const createNewProjectValidation= (req,res,next)=>{
 
 const projectValidation= (req,res,next)=>{
     const schema=Joi.object({
+        _id:longStr.min(8).required(),
         title:shortStr.min(2),
         deadline:shortStr.min(2),
         income:Joi.number()
@@ -87,11 +88,31 @@ const projectValidation= (req,res,next)=>{
     next()
 }
 
+//client validation
+const clientValidation= (req,res,next)=>{
+    const schema=Joi.object({
+        _id:longStr.min(8).required(),
+        name:shortStr.min(2),
+        company:shortStr.min(2),
+        email:email.required(),
+        phone:contactNumber.required(),
+        paid:Joi.number(),
+        budget:Joi.number()
+    })
+    const value=schema.validate(req.body)
+    if(value.error){
+        return res.send({error:value.error.message})
+    }
+    next()
+}
+
+
 module.exports={
     resetPasswordValidation,
     updatePasswordValidation,
     createNewUserValidation,
     loginValidation,
     createNewProjectValidation,
-    projectValidation
+    projectValidation,
+    clientValidation
 }

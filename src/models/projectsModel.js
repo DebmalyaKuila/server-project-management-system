@@ -19,6 +19,19 @@ const projectSchema=new Schema({
     timestamps:true
 })
 
+projectSchema.methods.toJSON = function(){
+    //get the mongoose document using this keyword
+    const project = this
+    //convert the mongoose document to an object by using toObject() method of mongoose
+    const projectObject=project.toObject()
+
+    delete projectObject.createdAt
+    delete projectObject.updatedAt
+    delete projectObject.__v
+
+    return projectObject
+}
+
 const Project = model("project",projectSchema)
 
 module.exports=Project
