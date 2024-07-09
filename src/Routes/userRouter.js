@@ -92,13 +92,25 @@ router.get("/", userAuthorization, async (req, res) => {
 })
 
 //update employee details (only by admin)
-router.patch("/",userAuthorization,isAdmin, async (req, res) => {
+router.patch("/:id",userAuthorization,isAdmin, async (req, res) => {
     try {
-        const updatedUser = await User.findOneAndUpdate({_id:req.body._id},req.body,{
-            new:true
-        });
-        await updatedUser.save()
-        res.send(updatedUser)
+    const updates = Object.keys(req.body)
+    //specifying allowed update operations
+    const allowedUpdateOperations = ["name", "email","phone","role","designation"]
+    //determine whether the update operation is valid or not 
+    const isValidOperation = updates.every((update) => {
+        return allowedUpdateOperations.includes(update)
+    })
+    //if some invalid update is being performed for some values in database which are not changable
+    if (!isValidOperation) {
+        return res.status(400).send({ error: "Invalid update !!" })
+    }
+    const user = await User.findOne({_id:req.params.id});
+    updates.forEach((update) => {
+        user[update] = req.body[update]
+    })
+        await user.save()
+        res.send(user)
     } catch (error) {
         console.log(error);
         res.status(500).send({message : "internal server error"})
